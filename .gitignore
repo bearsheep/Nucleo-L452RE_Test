@@ -1,0 +1,24 @@
+Debug/
+*.cfg
+
+#ignore all subdirectories of make
+make/*/ 
+#as well as all direct build artifacts
+make/*.o
+make/*.d
+make/*.bin
+make/*.elf
+make/*.a
+make/*.map
+make/*.list
+
+build/*
+
+Documents/~*
+
+MSA-test-suite/build/*
+MSA-test-suite/dist/*
+MSA-test-suite/*.egg-info/
+
+*.pyc
+*.npy
