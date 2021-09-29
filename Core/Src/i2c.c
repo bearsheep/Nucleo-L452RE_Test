@@ -21,7 +21,7 @@
 #include "i2c.h"
 
 /* USER CODE BEGIN 0 */
-
+const uint32_t kI2C_Timeout_Max = 10;    // 10ms
 /* USER CODE END 0 */
 
 I2C_HandleTypeDef hi2c1;
@@ -335,7 +335,26 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 }
 
 /* USER CODE BEGIN 1 */
+HAL_StatusTypeDef I2CM_RandomRead(I2C_HandleTypeDef *hal_i2c_select, uint16_t slave_addr, uint8_t *register_addr,
+                                  uint8_t *rx_buffer, uint16_t num_byte)
+{
+    HAL_StatusTypeDef ret;
 
+    ret = HAL_I2C_Master_Transmit(hal_i2c_select, slave_addr, register_addr, 1, kI2C_Timeout_Max);
+    if(ret != HAL_OK)
+    {
+        Error_Handler();
+    }
+    else
+    {
+        ret = HAL_I2C_Master_Receive(hal_i2c_select, slave_addr, rx_buffer, num_byte, kI2C_Timeout_Max);
+        if(ret != HAL_OK)
+        {
+            Error_Handler();
+        }
+    }
+    return ret;
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

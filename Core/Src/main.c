@@ -51,7 +51,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void I2C_Master_Test(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -92,7 +92,7 @@ int main(void)
   MX_I2C2_Init();
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
-
+  I2C_Master_Test();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -154,7 +154,18 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void I2C_Master_Test(void)
+{
+    HAL_StatusTypeDef ret;
+    uint8_t i2c_rx_buffer[16]={0}, register_addr[1];
 
+    register_addr[0] = 0x00;
+    ret = I2CM_RandomRead(&hi2c3, (uint16_t)0xA0, (uint8_t *)register_addr, (uint8_t *)i2c_rx_buffer, 16);
+    if(ret != HAL_OK)
+    {
+      Error_Handler();
+    }
+}
 /* USER CODE END 4 */
 
 /**
