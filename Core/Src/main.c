@@ -168,6 +168,11 @@ void I2C_Master_Test(void)
     {
       Error_Handler();
     }
+    ret = I2CM_CurrentAddrRead(&hi2c3, (uint16_t)0xA0, (uint8_t *)i2c_rx_buffer, 16);
+    if(ret != HAL_OK)
+    {
+      Error_Handler();
+    }
 }
 
 void UART_Test(void)

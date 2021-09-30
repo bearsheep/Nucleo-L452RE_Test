@@ -355,6 +355,19 @@ HAL_StatusTypeDef I2CM_RandomRead(I2C_HandleTypeDef *hal_i2c_select, uint16_t sl
     }
     return ret;
 }
+
+HAL_StatusTypeDef I2CM_CurrentAddrRead(I2C_HandleTypeDef *hal_i2c_select, uint16_t slave_addr, uint8_t *rx_buffer,
+                                       uint16_t num_byte)
+{
+    HAL_StatusTypeDef ret;
+
+    ret = HAL_I2C_Master_Receive(hal_i2c_select, slave_addr, rx_buffer, num_byte, kI2C_Timeout_Max);
+    if(ret != HAL_OK)
+    {
+        Error_Handler();
+    }
+    return ret;
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

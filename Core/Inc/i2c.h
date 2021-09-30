@@ -46,6 +46,8 @@ void MX_I2C3_Init(void);
 /* USER CODE BEGIN Prototypes */
 HAL_StatusTypeDef I2CM_RandomRead(I2C_HandleTypeDef *hal_i2c_select, uint16_t slaveAddr, uint8_t *register_addr,
                                   uint8_t *rx_buffer, uint16_t num_byte);
+HAL_StatusTypeDef I2CM_CurrentAddrRead(I2C_HandleTypeDef *hal_i2c_select, uint16_t slaveAddr, uint8_t *rx_buffer,
+                                       uint16_t num_byte);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
