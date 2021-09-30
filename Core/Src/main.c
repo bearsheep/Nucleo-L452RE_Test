@@ -160,15 +160,51 @@ void SystemClock_Config(void)
 void I2C_Master_Test(void)
 {
     HAL_StatusTypeDef ret;
-    uint8_t i2c_rx_buffer[16]={0}, register_addr[1];
+    uint8_t i2c_rx_buffer[16]={0}, i2c_tx_buffer[16]={0}, register_addr[1];
 
+    /* Random read */
     register_addr[0] = 0x00;
     ret = I2CM_RandomRead(&hi2c3, (uint16_t)0xA0, (uint8_t *)register_addr, (uint8_t *)i2c_rx_buffer, 16);
     if(ret != HAL_OK)
     {
       Error_Handler();
     }
+    /* Current address read */
     ret = I2CM_CurrentAddrRead(&hi2c3, (uint16_t)0xA0, (uint8_t *)i2c_rx_buffer, 16);
+    if(ret != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /* Sequential bytes write */
+    // Write 0x03 to PageSelect(0x7F)
+    i2c_tx_buffer[0] = 0x7F;
+    i2c_tx_buffer[1] = 0x03;
+    ret = I2CM_SequentialBytesWrite(&hi2c3, (uint16_t)0xA0, (uint8_t *)i2c_tx_buffer, 2);
+    if(ret != HAL_OK)
+    {
+      Error_Handler();
+    }
+    HAL_Delay(80);  // HW 6.0: Complete Single or Sequential Write to non-volatile registers timing max = 80ms
+    // Read back to check PageSelect(0x7F) = 0x03
+    register_addr[0] = 0x7F;
+    ret = I2CM_RandomRead(&hi2c3, (uint16_t)0xA0, (uint8_t *)register_addr, (uint8_t *)i2c_rx_buffer, 1);
+    if(ret != HAL_OK)
+    {
+      Error_Handler();
+    }
+    // Write data to byte 254-255(0xEF-0xFF)
+    i2c_tx_buffer[0] = 0xFE;
+    i2c_tx_buffer[1] = 0x99;
+    i2c_tx_buffer[2] = 0xAA;
+    ret = I2CM_SequentialBytesWrite(&hi2c3, (uint16_t)0xA0, (uint8_t *)i2c_tx_buffer, 3);
+    if(ret != HAL_OK)
+    {
+      Error_Handler();
+    }
+    HAL_Delay(80);
+    // Read back to check byte 254-255(0xEF-0xFF) = 0x99 0xAA
+    register_addr[0] = 0xFE;
+    ret = I2CM_RandomRead(&hi2c3, (uint16_t)0xA0, (uint8_t *)register_addr, (uint8_t *)i2c_rx_buffer, 2);
     if(ret != HAL_OK)
     {
       Error_Handler();

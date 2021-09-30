@@ -48,6 +48,8 @@ HAL_StatusTypeDef I2CM_RandomRead(I2C_HandleTypeDef *hal_i2c_select, uint16_t sl
                                   uint8_t *rx_buffer, uint16_t num_byte);
 HAL_StatusTypeDef I2CM_CurrentAddrRead(I2C_HandleTypeDef *hal_i2c_select, uint16_t slaveAddr, uint8_t *rx_buffer,
                                        uint16_t num_byte);
+HAL_StatusTypeDef I2CM_SequentialBytesWrite(I2C_HandleTypeDef *hal_i2c_select, uint16_t slave_addr, uint8_t *tx_buffer,
+                                            uint16_t num_byte);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
