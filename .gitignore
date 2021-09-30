@@ -11,7 +11,7 @@ make/*.elf
 make/*.a
 make/*.map
 make/*.list
-
+.settings/
 build/*
 
 Documents/~*
@@ -22,3 +22,6 @@ MSA-test-suite/*.egg-info/
 
 *.pyc
 *.npy
+
+#Generate after run debug mode
+*.launch
