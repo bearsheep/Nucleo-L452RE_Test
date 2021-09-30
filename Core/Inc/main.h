@@ -60,26 +60,30 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
+#define I2C3_Master_SCL_DSP_Pin GPIO_PIN_0
+#define I2C3_Master_SCL_DSP_GPIO_Port GPIOC
+#define I2C3_Master_SDA_DSP_Pin GPIO_PIN_1
+#define I2C3_Master_SDA_DSP_GPIO_Port GPIOC
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
 #define LD4_Pin GPIO_PIN_5
 #define LD4_GPIO_Port GPIOA
-#define I2C_Master___SCL_Pin GPIO_PIN_10
-#define I2C_Master___SCL_GPIO_Port GPIOB
-#define I2C_Master___SDA_Pin GPIO_PIN_11
-#define I2C_Master___SDA_GPIO_Port GPIOB
+#define I2C2_Master_SCL_Pin GPIO_PIN_10
+#define I2C2_Master_SCL_GPIO_Port GPIOB
+#define I2C2_Master_SDA_Pin GPIO_PIN_11
+#define I2C2_Master_SDA_GPIO_Port GPIOB
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
-#define I2C_Slave_SCL_Pin GPIO_PIN_8
-#define I2C_Slave_SCL_GPIO_Port GPIOB
-#define I2C_Slave_SDA_Pin GPIO_PIN_9
-#define I2C_Slave_SDA_GPIO_Port GPIOB
+#define I2C1_Slave_SCL_Pin GPIO_PIN_8
+#define I2C1_Slave_SCL_GPIO_Port GPIOB
+#define I2C1_Slave_SDA_Pin GPIO_PIN_9
+#define I2C1_Slave_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
