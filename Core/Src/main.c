@@ -25,7 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +53,7 @@
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void I2C_Master_Test(void);
+void UART_Test(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -99,6 +101,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    UART_Test();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -165,6 +168,24 @@ void I2C_Master_Test(void)
     {
       Error_Handler();
     }
+}
+
+void UART_Test(void)
+{
+    uint8_t uart_buf[32];
+    char Uart_Tx_Method_1[32] = "Method_1\r\n";
+    char str_buffer[128];
+
+
+    strcpy((char *)uart_buf, Uart_Tx_Method_1);
+    HAL_UART_Transmit(&huart2, uart_buf, strlen((char *)uart_buf), HAL_MAX_DELAY);
+    HAL_Delay(1000);
+    strcpy((char *)uart_buf, "Method_2\r\n");
+    HAL_UART_Transmit(&huart2, uart_buf, strlen((char *)uart_buf), HAL_MAX_DELAY);
+    HAL_Delay(1000);
+    sprintf(str_buffer, "Method_3: number = 0x%X\r\n", uart_buf[0]);
+    HAL_UART_Transmit(&huart2, (uint8_t *)str_buffer, strlen((char *)str_buffer), HAL_MAX_DELAY);
+    HAL_Delay(1000);
 }
 /* USER CODE END 4 */
 
