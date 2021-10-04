@@ -7559,7 +7559,7 @@ void spica_channel_adjust(
     {
         if(*channel != 0)
         {
-            INPHI_CRIT("Non-zero channel specified on non-channel register, die 0x%08x, channel %d, addr 0x%08x\n", *die, *channel, *addr);
+            INPHI_CRIT("Non-zero channel specified on non-channel register, die 0x%08lu, channel %lu, addr 0x%08lu\n", *die, *channel, *addr);
         }
         return;
     }
@@ -7573,7 +7573,7 @@ void spica_channel_adjust(
         //for now channels must be > 0, we should replace this with a is_valid call
         if(*channel == 0)
         {
-            INPHI_CRIT("Channel 0 invalid, die 0x%08x, channel %d, addr 0x%08x, block %d\n", *die, *channel, *addr, info->block);
+            INPHI_CRIT("Channel 0 invalid, die 0x%08lu, channel %lu, addr 0x%08lu, block %d\n", *die, *channel, *addr, info->block);
             return;
         }
 
@@ -7856,7 +7856,7 @@ uint32_t spica_get_die_inst_from_pkg_ch(
 
     if ((die == 0xf) && (inst == 0xf))
     {
-        INPHI_CRIT("Invalid pkg channel, pkg type:%s, info->block:%d, channel:%d\n", 
+        INPHI_CRIT("Invalid pkg channel, pkg type:%s, info->block:%d, channel:%lu\n",
                     spica_dbg_translate_package_type(pkg_type), info->block, channel);
         return 0;
     }
@@ -8691,7 +8691,7 @@ inphi_status_t spica_prbs_chk_status_print(
 {
     inphi_status_t status = INPHI_OK;
 
-    INPHI_NOTE("\n%s PRBS checker status for die 0x%08x\n", 
+    INPHI_NOTE("\n%s PRBS checker status for die 0x%08lu\n",
                 spica_dbg_translate_intf(intf), die);
 
     INPHI_NOTE("%5s| %5s| %10s| %8s| %8s| %12s| %21s| %10s| %10s|", 
@@ -8712,7 +8712,7 @@ inphi_status_t spica_prbs_chk_status_print(
     INPHI_NOTE("%12s", "------------+");
 #endif //defined(INPHI_HAS_FLOATING_POINT) && (INPHI_HAS_FLOATING_POINT==1)
     INPHI_NOTE("\n");
-    INPHI_NOTE("|  %2d| %5s| %10s| %8s| %8s| %12u| %21" PRIu64 "| %10s|", 
+    INPHI_NOTE("|  %2lu| %5s| %10s| %8s| %8s| %12lu| %21" PRIu64 "| %10s|",
                channel, 
                chk_status->prbs_mode == SPICA_PRBS_MODE_COMBINED ? "CMB" : "MSB",
                chk_status->prbs_lock ? "True" : "False",
@@ -8743,7 +8743,7 @@ inphi_status_t spica_prbs_chk_status_print(
     // assume the mode is the same for all channels
     if (chk_status->prbs_mode == SPICA_PRBS_MODE_MSB_LSB)
     {        
-        INPHI_NOTE("|  %2d| %5s| %10s| %8s| %8s| %12u| %21" PRIu64 "| %10s|", 
+        INPHI_NOTE("|  %2lu| %5s| %10s| %8s| %8s| %12lu| %21" PRIu64 "| %10s|",
                    channel, 
                    "LSB",
                    chk_status->prbs_lock_lsb ? "True" : "False",
@@ -9144,7 +9144,7 @@ inphi_status_t spica_diags_register_dump(uint32_t die)
 
     uint32_t range;
 
-    INPHI_NOTE("DIE %x\n-----------\n", die);
+    INPHI_NOTE("DIE %lu\n-----------\n", die);
 
     if(spica_lock(die) != INPHI_OK) return INPHI_ERROR;
 
@@ -9160,7 +9160,7 @@ inphi_status_t spica_diags_register_dump(uint32_t die)
             reg_data = spica_reg_read(die, addr);
 
             // registers are 16bits, and the addresses increment by 1
-            INPHI_NOTE("0x%06x = 0x%04x\n", addr, reg_data);
+            INPHI_NOTE("0x%06lu = 0x%04lu\n", addr, reg_data);
             addr += 1;
         }
     }
@@ -9678,7 +9678,7 @@ inphi_status_t spica_lock(
     inphi_status_t status = g_spica_callback_lock(die);
     if(status)
     {
-        INPHI_CRIT("ERROR: Could not obtain lock on die %x\n", die);
+        INPHI_CRIT("ERROR: Could not obtain lock on die %lu\n", die);
     }
     return status;
 }
@@ -9695,7 +9695,7 @@ inphi_status_t spica_unlock(
     inphi_status_t status = g_spica_callback_unlock(die);
     if(status)
     {
-        INPHI_CRIT("ERROR: Could not release lock on die %x\n", die);
+        INPHI_CRIT("ERROR: Could not release lock on die %lu\n", die);
     }
     return status;
 }
@@ -10029,7 +10029,7 @@ inphi_status_t spica_tx_check_rules(
         if(tx_rules->fir_taps[4] || tx_rules->fir_taps[5] || tx_rules->fir_taps[6])
         {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-            INPHI_CRIT("%s:ch%d: fir_taps outside of range for 4TAP Tx FIR mode are set\n", spica_dbg_translate_intf(intf), channel);
+            INPHI_CRIT("%s:ch%lu: fir_taps outside of range for 4TAP Tx FIR mode are set\n", spica_dbg_translate_intf(intf), channel);
 #else
             INPHI_CRIT("%d:ch%d: fir_taps outside of range for 4TAP Tx FIR mode are set\n", intf, channel);
 #endif
@@ -10042,7 +10042,7 @@ inphi_status_t spica_tx_check_rules(
         if((tx_rules->lut_mode == SPICA_LUT_7TAP_LIN) ||
            (tx_rules->lut_mode == SPICA_LUT_7TAP_LUT))
         {
-            INPHI_CRIT("HTX:ch%d: 7TAP modes are not supported\n", channel);
+            INPHI_CRIT("HTX:ch%lu: 7TAP modes are not supported\n", channel);
         }
     }
 #endif // defined(INPHI_REMOVE_PSR)
@@ -10241,7 +10241,7 @@ void spica_bundle_dbg_print_rules(
     {
         INPHI_NOTE("     %d |", bundle_idx);
         INPHI_NOTE("%s", bundle_rules->en[bundle_idx] ? "    True" : "   False" );
-        INPHI_NOTE("| 0x%08x", bundle_rules->die[bundle_idx]);
+        INPHI_NOTE("| 0x%08lu", bundle_rules->die[bundle_idx]);
         INPHI_NOTE("| ");
         ch_num = 0;
         for (int32_t ch_idx = INBIT8; ch_num < 8; ch_idx >>= 1)
@@ -10293,7 +10293,7 @@ void spica_dbg_print_fw_warn_if_mismatch(
         (fw_build    != SPICA_APP_VERSION_BUILD))
     {
         INPHI_FPRINTF(stderr, "\n\n");
-        INPHI_WARN("MCU Firmware running on die 0x%08x may not be compatible with API\n", die);
+        INPHI_WARN("MCU Firmware running on die 0x%08lu may not be compatible with API\n", die);
         INPHI_WARN("MCU Firmware running (major.minor.revision.build) %d.%d.%d.%d but API expecting %d.%d.%d.%d\n",
                         fw_major,
                         fw_minor,
@@ -10337,7 +10337,7 @@ void spica_dbg_print_rules_per_bundle(
 
     if (!spica_bundle_is_en(bundle_idx))
     {
-        INPHI_CRIT("ERROR: Bundle not enabled %d\n", bundle_idx);
+        INPHI_CRIT("ERROR: Bundle not enabled %lu\n", bundle_idx);
         return;
     }
 
@@ -10347,10 +10347,10 @@ void spica_dbg_print_rules_per_bundle(
     {
 #if !defined(INPHI_REMOVE_PMR)
         INPHI_NOTE("Top Rules\n"
-                   "  Die                        0x%08x\n"
+                   "  Die                        0x%08lu\n"
                    "  Package                    %s\n"
                    "  Efuse Driver Override      %s\n"
-                   "  FW Download Timeout        %d milli-secs\n"
+                   "  FW Download Timeout        %lu milli-secs\n"
                    "  FW Warn if Mismatched      %s\n" 
                    "  LRX QC SNR Thresh mm Enter %s\n" 
                    "  LRX QC SNR Thresh mm Exit  %s\n" 
@@ -10384,10 +10384,10 @@ void spica_dbg_print_rules_per_bundle(
     {
 #if !defined(INPHI_REMOVE_PSR)
         INPHI_NOTE("Top Rules\n"
-                   "  Die                        0x%08x\n"
+                   "  Die                        0x%08lu\n"
                    "  Package                    %s\n"
                    "  Efuse Driver Override      %s\n"
-                   "  FW Download Timeout        %d milli-secs\n"
+                   "  FW Download Timeout        %lu milli-secs\n"
                    "  FW Warn if Mismatched      %s\n" 
                    "  LRX QC SNR Thresh mm Enter %s\n" 
                    "  LRX QC SNR Thresh mm Exit  %s\n" 
@@ -10415,7 +10415,7 @@ void spica_dbg_print_rules_per_bundle(
     INPHI_NOTE("\n");
 
     INPHI_NOTE("Bundle Rules\n"
-               "  Bundle                 %d\n"
+               "  Bundle                 %lu\n"
                "  Line Ch Map            0x%04x\n"
                "  Host Ch Map            0x%04x\n"
                "  Operational Mode       %s\n"
@@ -10436,7 +10436,7 @@ void spica_dbg_print_rules_per_bundle(
     {
         if (bundle_rules.line_ch_map[bundle_idx] & ch_idx)
         {
-            INPHI_NOTE("     Ch%d|", ch_num);
+            INPHI_NOTE("     Ch%lu|", ch_num);
         }
         ch_num++;
     }
@@ -10490,7 +10490,7 @@ void spica_dbg_print_rules_per_bundle(
     {
         if (bundle_rules.host_ch_map[bundle_idx] & ch_idx)
         {
-            INPHI_NOTE("     Ch%d|", ch_num);
+            INPHI_NOTE("     Ch%lu|", ch_num);
         }
         ch_num++;
     }
@@ -10547,7 +10547,7 @@ void spica_dbg_print_rules_per_bundle(
     {
         if (bundle_rules.line_ch_map[bundle_idx] & ch_idx)
         {
-            INPHI_NOTE("     Ch%d|", ch_num);
+            INPHI_NOTE("     Ch%lu|", ch_num);
         }
         ch_num++;
     }
@@ -10582,7 +10582,7 @@ void spica_dbg_print_rules_per_bundle(
     {
         if (bundle_rules.host_ch_map[bundle_idx] & ch_idx)
         {
-            INPHI_NOTE("     Ch%d|", ch_num);
+            INPHI_NOTE("     Ch%lu|", ch_num);
         }
         ch_num++;
     }
@@ -10639,7 +10639,7 @@ void spica_dbg_print_rules_per_bundle(
             {
                 if (bundle_rules.line_ch_map[bundle_idx] & ch_idx)
                 {
-                    INPHI_NOTE("     Ch%d|", ch_num);
+                    INPHI_NOTE("     Ch%lu|", ch_num);
                 }
                 ch_num++;
             }
@@ -10740,7 +10740,7 @@ void spica_dbg_print_rules_per_bundle(
             {
                 if (bundle_rules.host_ch_map[bundle_idx] & ch_idx)
                 {
-                    INPHI_NOTE("     Ch%d|", ch_num);
+                    INPHI_NOTE("     Ch%lu|", ch_num);
                 }
                 ch_num++;
             }
@@ -10987,7 +10987,7 @@ void spica_dbg_print_rules_per_bundle(
                 INPHI_NOTE("  Baudrate (kBps) ");
                 SPICA_FOR_CHANNEL_IN_BUNDLE(base_die, bundle_idx, rx_intf)
                 {
-                    INPHI_NOTE("|%8d", rx_sun_rules[channel].rates);
+                    INPHI_NOTE("|%8lu", rx_sun_rules[channel].rates);
                 }
 
                 INPHI_NOTE("|\n");
@@ -11009,7 +11009,7 @@ void spica_dbg_print_rules_per_bundle(
             {
                 if (bundle_rules.line_ch_map[bundle_idx] & ch_idx)
                 {
-                    INPHI_NOTE("     Ch%d|", ch_num);
+                    INPHI_NOTE("     Ch%lu|", ch_num);
                 }
                 ch_num++;
             }
@@ -11046,7 +11046,7 @@ void spica_dbg_print_rules_per_bundle(
             {
                 if (bundle_rules.host_ch_map[bundle_idx] & ch_idx)
                 {
-                    INPHI_NOTE("     Ch%d|", ch_num);
+                    INPHI_NOTE("     Ch%lu|", ch_num);
                 }
                 ch_num++;
             }
@@ -11230,7 +11230,7 @@ void spica_dbg_query_print_rules_per_bundle(
 
     if (!spica_bundle_is_en(bundle_idx))
     {
-        INPHI_CRIT("ERROR: Bundle not enabled %d\n", bundle_idx);
+        INPHI_CRIT("ERROR: Bundle not enabled %lu\n", bundle_idx);
         return;
     }
 
@@ -11347,7 +11347,7 @@ bool spica_is_fw_running_ok(
     // if the FW state is not ok, print out debug info
     if (!ok)
     {
-        INPHI_NOTE("\nERROR: FW on die 0x%08x not running ok, printing state:\n", die);
+        INPHI_NOTE("\nERROR: FW on die 0x%08lu not running ok, printing state:\n", die);
         if (fw_mode != 0xACC0) 
         {
             INPHI_NOTE("  - FW NOT in application mode, mode = (UNKNOWN)0x%04x\n", fw_mode); 
@@ -11991,7 +11991,7 @@ inphi_status_t spica_cp_overlays_to_rules(
 
     if (!spica_bundle_is_en(bundle_idx))
     {
-        INPHI_CRIT("ERROR: Bundle not enabled %d\n", bundle_idx);
+        INPHI_CRIT("ERROR: Bundle not enabled %lu\n", bundle_idx);
         return INPHI_ERROR;
     }
 
@@ -12203,7 +12203,7 @@ inphi_status_t spica_cp_rules_to_overlays(
 
     if (!spica_bundle_is_en(bundle_idx))
     {
-        INPHI_CRIT("ERROR: Bundle not enabled %d\n", bundle_idx);
+        INPHI_CRIT("ERROR: Bundle not enabled %lu\n", bundle_idx);
         return INPHI_ERROR;
     }
 
@@ -12684,7 +12684,7 @@ inphi_status_t spica_check_rules(
             (rules->orx[channel].gray_mapping == true))
         {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-            INPHI_WARN("Signalling is NRZ, forcing LRX channel %d gray_mapping rule to FALSE\n", channel);
+            INPHI_WARN("Signalling is NRZ, forcing LRX channel %lu gray_mapping rule to FALSE\n", channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
             rules->orx[channel].gray_mapping = false;
         }
@@ -12705,7 +12705,7 @@ inphi_status_t spica_check_rules(
                 (rules->mrx[channel].gray_mapping == true))
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-            INPHI_WARN("Signalling is NRZ, forcing HRX channel %d gray_mapping rule to FALSE\n", channel);
+            INPHI_WARN("Signalling is NRZ, forcing HRX channel %lu gray_mapping rule to FALSE\n", channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
                 rules->mrx[channel].gray_mapping = false;
             }
@@ -12728,7 +12728,7 @@ inphi_status_t spica_check_rules(
                 (rules->srx[channel].gray_mapping == true))
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-            INPHI_WARN("Signalling is NRZ, forcing HRX channel %d gray_mapping rule to FALSE\n", channel);
+            INPHI_WARN("Signalling is NRZ, forcing HRX channel %lu gray_mapping rule to FALSE\n", channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
                 rules->srx[channel].gray_mapping = false;
             }
@@ -12795,7 +12795,7 @@ inphi_status_t spica_check_rules(
         if(rules->orx[channel].los_dsp_en)
         {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-            INPHI_WARN("orx[%d].los_dsp_en set to true. Note this feature is untested.\n", channel);
+            INPHI_WARN("orx[%lu].los_dsp_en set to true. Note this feature is untested.\n", channel);
             INPHI_WARN("User must ensure lrx_los_asrt_ctrl_startup and lrx_los_asrt_ctrl_datamode set to DAC code.\n");
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)            
         }
@@ -12803,7 +12803,7 @@ inphi_status_t spica_check_rules(
         if(rules->orx[channel].sdt_dsp_en)
         {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-            INPHI_WARN("orx[%d].sdt_dsp_en set to true. Note this feature is untested.\n", channel);
+            INPHI_WARN("orx[%lu].sdt_dsp_en set to true. Note this feature is untested.\n", channel);
             INPHI_WARN("User must ensure lrx_los_dsrt_ctrl_startup set to DAC code.\n");
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)            
         }
@@ -12854,7 +12854,7 @@ inphi_status_t spica_init_per_bundle(
 
     if (!spica_bundle_is_en(bundle_idx))
     {
-        INPHI_CRIT("ERROR: Bundle not enabled %d\n", bundle_idx);
+        INPHI_CRIT("ERROR: Bundle not enabled %lu\n", bundle_idx);
         return INPHI_ERROR;
     }
 
@@ -12947,7 +12947,7 @@ inphi_status_t spica_init_per_bundle(
 
     if (attempts <= 0)
     {
-        INPHI_CRIT("ERROR: Timed out waiting for FW on die 0x%08x to ack chip_init request.\n", bundle_die);
+        INPHI_CRIT("ERROR: Timed out waiting for FW on die 0x%08lu to ack chip_init request.\n", bundle_die);
         status |= INPHI_ERROR;
     }
 
@@ -13015,7 +13015,7 @@ inphi_status_t spica_enter_operational_state_per_bundle(
 
     if (!spica_bundle_is_en(bundle_idx))
     {
-        INPHI_CRIT("ERROR: Bundle not enabled %d\n", bundle_idx);
+        INPHI_CRIT("ERROR: Bundle not enabled %lu\n", bundle_idx);
         return INPHI_ERROR;
     }
 
@@ -13023,7 +13023,7 @@ inphi_status_t spica_enter_operational_state_per_bundle(
 
     if (status != INPHI_OK)
     {
-        INPHI_CRIT("\nERROR sending rules to die:0x%08x, bundle:%d\n", die, bundle_idx);
+        INPHI_CRIT("\nERROR sending rules to die:0x%08lu, bundle:%lu\n", die, bundle_idx);
         return status;
     }
 
@@ -13049,7 +13049,7 @@ inphi_status_t spica_enter_operational_state_per_bundle(
 
     if (attempts <= 0)
     {
-        INPHI_CRIT("ERROR: Timed out waiting for FW on die 0x%08x to ack update_all_rules request.\n", bdie);
+        INPHI_CRIT("ERROR: Timed out waiting for FW on die 0x%08lu to ack update_all_rules request.\n", bdie);
         status |= INPHI_ERROR;
     }
 
@@ -13080,7 +13080,7 @@ inphi_status_t spica_enter_operational_state(
             status |= spica_enter_operational_state_per_bundle(base_die, bundle_idx, rules);
             if (status != INPHI_OK)
             {
-                INPHI_CRIT("\nERROR calling enter_operation_state for die 0x%08x, bundle %d\n", base_die, bundle_idx);
+                INPHI_CRIT("\nERROR calling enter_operation_state for die 0x%08lu, bundle %lu\n", base_die, bundle_idx);
                 return status;
             }
         }
@@ -13283,7 +13283,7 @@ inphi_status_t spica_rules_default_set_per_bundle(
     }
     if (!spica_bundle_is_en(bundle_idx))
     {
-        INPHI_CRIT("ERROR: Bundle not enabled %d\n", bundle_idx);
+        INPHI_CRIT("ERROR: Bundle not enabled %lu\n", bundle_idx);
         return INPHI_ERROR;
     }
     if(op_mode >= SPICA_MODE_OP_END)
@@ -13848,7 +13848,7 @@ inphi_status_t spica_tx_fir_set(
     if(status != INPHI_OK) 
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Member of tx_rules() not supported by this method has been changed  ...\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Member of tx_rules() not supported by this method has been changed  ...\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
         return status;
     }
@@ -13862,7 +13862,7 @@ inphi_status_t spica_tx_fir_set(
     if(status != INPHI_OK) 
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Failed copying tx rules to overlays ...\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Failed copying tx rules to overlays ...\n", spica_dbg_translate_intf(intf), channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
         return status;
     }
@@ -13926,7 +13926,7 @@ inphi_status_t spica_tx_fir_set(
     if((status) || (attempts <= 0))
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Timed out waiting for FW to update tx_fir...\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Timed out waiting for FW to update tx_fir...\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
         status |= INPHI_ERROR;
     }
@@ -14224,7 +14224,7 @@ inphi_status_t spica_link_status_print(
         host_ch = spica_channels(die, SPICA_INTF_PSR);
     }
 
-    INPHI_NOTE("Link Status for die 0x%08x\n", die);
+    INPHI_NOTE("Link Status for die 0x%08lu\n", die);
     INPHI_NOTE("+---------------------------------------------------------------------------------+\n");
     INPHI_NOTE("|  Top FW Lock    %s                                                               |\n", link_status->fw_lock ? "Y" : ".");
     INPHI_NOTE("+----------------------------------------+----------------------------------------+\n");
@@ -14255,7 +14255,7 @@ inphi_status_t spica_link_status_print(
     SPICA_FOR_CHANNEL_IN_CHANNELS(die, tx_intf)
     {
         uint32_t die_inst = spica_get_die_inst_from_pkg_ch(die, channel, tx_intf);
-        INPHI_NOTE("%d%1x ", (die_inst >> 16), (die_inst & 0xffff));
+        INPHI_NOTE("%lu%1lu ", (die_inst >> 16), (die_inst & 0xffff));
     }
     if (host_ch->num == 4)
     {
@@ -14265,7 +14265,7 @@ inphi_status_t spica_link_status_print(
     SPICA_FOR_CHANNEL_IN_CHANNELS(die, rx_intf)
     {
         uint32_t die_inst = spica_get_die_inst_from_pkg_ch(die, channel, rx_intf);
-        INPHI_NOTE("%d%1x ", (die_inst >> 16), (die_inst & 0xffff));
+        INPHI_NOTE("%lu%1lu ", (die_inst >> 16), (die_inst & 0xffff));
     }
     if (host_ch->num == 4)
     {
@@ -14426,7 +14426,7 @@ inphi_status_t spica_link_status_print(
     SPICA_FOR_CHANNEL_IN_CHANNELS(die, SPICA_INTF_ORX)
     {
         uint32_t die_inst = spica_get_die_inst_from_pkg_ch(die, channel, SPICA_INTF_ORX);
-        INPHI_NOTE("%d%1x ", (die_inst >> 16), (die_inst & 0xffff));
+        INPHI_NOTE("%lu%1lu ", (die_inst >> 16), (die_inst & 0xffff));
     }
     if (line_ch->num == 4)
     {
@@ -14438,7 +14438,7 @@ inphi_status_t spica_link_status_print(
     SPICA_FOR_CHANNEL_IN_CHANNELS(die, SPICA_INTF_OTX)
     {
         uint32_t die_inst = spica_get_die_inst_from_pkg_ch(die, channel, SPICA_INTF_OTX);
-        INPHI_NOTE("%d%1x ", (die_inst >> 16), (die_inst & 0xffff));
+        INPHI_NOTE("%lu%1lu ", (die_inst >> 16), (die_inst & 0xffff));
     }
     if (line_ch->num == 4)
     {
@@ -14705,7 +14705,7 @@ inphi_status_t spica_tx_man_config(
     if(timeout <= 0)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("Timed out waiting for FW to power-up %s ch %d\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("Timed out waiting for FW to power-up %s ch %lu\n", spica_dbg_translate_intf(intf), channel);
 #else
         INPHI_CRIT("Timed out waiting for FW to power-up intf %d ch %d\n", intf, channel);
 #endif
@@ -14750,7 +14750,7 @@ inphi_status_t spica_tx_man_config(
     if(timeout <= 0)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("ERROR: Timed out waiting for FW to stop writing to %s ch %d LUT\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("ERROR: Timed out waiting for FW to stop writing to %s ch %lu LUT\n", spica_dbg_translate_intf(intf), channel);
 #else
         INPHI_CRIT("ERROR: Timed out waiting for FW to stop writing to intf %d ch %d LUT\n", intf, channel);
 #endif
@@ -14940,7 +14940,7 @@ inphi_status_t spica_clock_group_enable(uint32_t die, uint32_t channel, e_spica_
     if((status) || (attempts <= 0))
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Timed out waiting for FW to dis/en clock group...\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Timed out waiting for FW to dis/en clock group...\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
         status |= INPHI_ERROR;
     }
@@ -14992,7 +14992,7 @@ inphi_status_t spica_tx_squelch_lock(
     else 
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Invalid intf\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Invalid intf\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)     
         status |= INPHI_ERROR;
     }
@@ -15018,7 +15018,7 @@ inphi_status_t spica_tx_squelch_lock(
     if((status) || (attempts <= 0))
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Timed out waiting for FW to update squelch_lock...\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Timed out waiting for FW to update squelch_lock...\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
         status |= INPHI_ERROR;
     }
@@ -15058,7 +15058,7 @@ inphi_status_t spica_tx_invert_toggle(
     else 
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Invalid intf\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Invalid intf\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)     
         status |= INPHI_ERROR;
     }
@@ -15084,7 +15084,7 @@ inphi_status_t spica_tx_invert_toggle(
     if((status) || (attempts <= 0))
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Timed out waiting for FW to update invert_chan...\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Timed out waiting for FW to update invert_chan...\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
         status |= INPHI_ERROR;
     }
@@ -15125,7 +15125,7 @@ inphi_status_t spica_rx_invert_toggle(
     else 
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Invalid intf\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Invalid intf\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)     
         status |= INPHI_ERROR;
     }
@@ -15151,7 +15151,7 @@ inphi_status_t spica_rx_invert_toggle(
     if((status) || (attempts <= 0))
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
-        INPHI_CRIT("%s ch%d: Timed out waiting for FW to update invert_chan...\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s ch%lu: Timed out waiting for FW to update invert_chan...\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1)
         status |= INPHI_ERROR;
     }
@@ -15236,7 +15236,7 @@ inphi_status_t spica_rx_dsp_acquire_estimation_semaphore(
             if (counter > SPICA_RX_DSP_FW_TIME_OUT)
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-                INPHI_CRIT("%s channel %d: API timed out waiting for ALG_STATUS__RSP == 0.\n", spica_dbg_translate_intf(intf), channel);
+                INPHI_CRIT("%s channel %lu: API timed out waiting for ALG_STATUS__RSP == 0.\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
                 return INPHI_ERROR;
             }
@@ -15252,7 +15252,7 @@ inphi_status_t spica_rx_dsp_acquire_estimation_semaphore(
             if (counter > SPICA_RX_DSP_FW_TIME_OUT)
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-                INPHI_CRIT("%s channel %d: API timed out waiting for ALG_CTRL__CTRL == 0.\n", spica_dbg_translate_intf(intf), channel);
+                INPHI_CRIT("%s channel %lu: API timed out waiting for ALG_CTRL__CTRL == 0.\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
                 return INPHI_ERROR;
             }
@@ -15329,7 +15329,7 @@ inphi_status_t spica_rx_dsp_acquire_estimation_semaphore(
             if (counter > SPICA_RX_DSP_FW_TIME_OUT)
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-                INPHI_CRIT("%s channel %d: API timed out waiting for ALG_STATUS__RSP == 0.\n", spica_dbg_translate_intf(intf), channel);
+                INPHI_CRIT("%s channel %lu: API timed out waiting for ALG_STATUS__RSP == 0.\n", spica_dbg_translate_intf(intf), channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
                 return INPHI_ERROR;
             }
@@ -15345,7 +15345,7 @@ inphi_status_t spica_rx_dsp_acquire_estimation_semaphore(
             if (counter > SPICA_RX_DSP_FW_TIME_OUT)
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-                INPHI_CRIT("%s channel %d: API timed out waiting for ALG_CTRL__CTRL == 0.\n", spica_dbg_translate_intf(intf), channel);
+                INPHI_CRIT("%s channel %lu: API timed out waiting for ALG_CTRL__CTRL == 0.\n", spica_dbg_translate_intf(intf), channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
                 return INPHI_ERROR;
             }
@@ -15442,7 +15442,7 @@ inphi_status_t spica_rx_dsp_release_estimation_semaphore(
             if (counter > SPICA_RX_DSP_FW_TIME_OUT)
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-                INPHI_CRIT("%s channel %d: API timed out waiting for ALG_STATUS__RSP == 1.\n", spica_dbg_translate_intf(intf), channel);
+                INPHI_CRIT("%s channel %lu: API timed out waiting for ALG_STATUS__RSP == 1.\n", spica_dbg_translate_intf(intf), channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
                 return INPHI_ERROR;
             }
@@ -15458,7 +15458,7 @@ inphi_status_t spica_rx_dsp_release_estimation_semaphore(
             if (counter > SPICA_RX_DSP_FW_TIME_OUT)
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-                INPHI_CRIT("%s channel %d: API timed out waiting for ALG_CTRL__CTRL == 1.\n", spica_dbg_translate_intf(intf), channel);
+                INPHI_CRIT("%s channel %lu: API timed out waiting for ALG_CTRL__CTRL == 1.\n", spica_dbg_translate_intf(intf), channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
                 return INPHI_ERROR;
             }
@@ -15501,7 +15501,7 @@ inphi_status_t spica_rx_dsp_release_estimation_semaphore(
             if (counter > SPICA_RX_DSP_FW_TIME_OUT)
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-                INPHI_CRIT("%s channel %d: API timed out waiting for ALG_STATUS__RSP == 1.\n", spica_dbg_translate_intf(intf), channel);
+                INPHI_CRIT("%s channel %lu: API timed out waiting for ALG_STATUS__RSP == 1.\n", spica_dbg_translate_intf(intf), channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
                 return INPHI_ERROR;
             }
@@ -15517,7 +15517,7 @@ inphi_status_t spica_rx_dsp_release_estimation_semaphore(
             if (counter > SPICA_RX_DSP_FW_TIME_OUT)
             {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-                INPHI_CRIT("%s channel %d: API timed out waiting for ALG_CTRL__CTRL == 1.\n", spica_dbg_translate_intf(intf), channel);
+                INPHI_CRIT("%s channel %lu: API timed out waiting for ALG_CTRL__CTRL == 1.\n", spica_dbg_translate_intf(intf), channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
                 return INPHI_ERROR;
             }
@@ -15983,7 +15983,7 @@ inphi_status_t spica_rx_dsp_hist_get(
     if (!fw_lock)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-        INPHI_WARN("%s[Channel %d]: NOT FW LOCKED!\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_WARN("%s[Channel %lu]: NOT FW LOCKED!\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
         status |= INPHI_ERROR;
 #if 0
@@ -16082,7 +16082,7 @@ uint16_t spica_rx_dsp_snr_read_db_fixp(
     if(!fw_lock)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-        INPHI_CRIT("%s Channel %d FW not locked. Cannot query VGA1\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s Channel %lu FW not locked. Cannot query VGA1\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
         return snr_val;
     }
@@ -16179,7 +16179,7 @@ inphi_status_t spica_rx_dsp_vga1_query(
     if(!fw_lock)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-        INPHI_CRIT("%s Channel %d FW not locked. Cannot query VGA1\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s Channel %lu FW not locked. Cannot query VGA1\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
         *vga1_gain = 0xffff;
         return INPHI_ERROR;
@@ -16189,7 +16189,7 @@ inphi_status_t spica_rx_dsp_vga1_query(
     if (status  != INPHI_OK)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-        INPHI_CRIT("%s Channel %d failed acquiring semaphore.\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s Channel %lu failed acquiring semaphore.\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
         return status;
     }
@@ -16263,7 +16263,7 @@ inphi_status_t spica_rx_dsp_vga2_query(
     if(!fw_lock)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-        INPHI_CRIT("%s Channel %d FW not locked. Cannot query VGA2\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s Channel %lu FW not locked. Cannot query VGA2\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
         *vga2_gain = 0xffff;
         return INPHI_ERROR;
@@ -16273,7 +16273,7 @@ inphi_status_t spica_rx_dsp_vga2_query(
     if (status  != INPHI_OK)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-        INPHI_CRIT("%s Channel %d failed acquiring semaphore.\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s Channel %lu failed acquiring semaphore.\n", spica_dbg_translate_intf(intf), channel);
 #endif // defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
         return status;
     }
@@ -16375,7 +16375,7 @@ inphi_status_t spica_rx_dsp_ffe_taps_query(
     if(!fw_lock)
     {
 #if defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
-        INPHI_CRIT("%s Channel %d FW not locked. Cannot query FFE Taps.\n", spica_dbg_translate_intf(intf), channel);
+        INPHI_CRIT("%s Channel %lu FW not locked. Cannot query FFE Taps.\n", spica_dbg_translate_intf(intf), channel);
 #endif //defined(INPHI_HAS_DIAGNOSTIC_DUMPS) && (INPHI_HAS_DIAGNOSTIC_DUMPS==1) 
         return INPHI_ERROR;
     }
@@ -16624,7 +16624,7 @@ inphi_status_t spica_rx_dsp_ffe_taps_print(
     uint16_t tap_index;
     
     INPHI_NOTE("\n");
-    INPHI_NOTE("%s Channel %d: DSP FFE Tap Values\n", spica_dbg_translate_intf(intf), channel);
+    INPHI_NOTE("%s Channel %lu: DSP FFE Tap Values\n", spica_dbg_translate_intf(intf), channel);
     INPHI_NOTE("==================================\n");
     
     INPHI_NOTE("Interleave | PRE3 | PRE2 | PRE1 | MAIN | PST1 | PST2 | PST3 | PST4 | PST5 | PST6 |\n");
@@ -16666,7 +16666,7 @@ inphi_status_t spica_srx_pulse_resp_query(
     if(!locked)
     {
         *len = 0;
-        INPHI_CRIT("SRX not locked on channel %d, cannot fetch pulse response\n", channel);
+        INPHI_CRIT("SRX not locked on channel %lu, cannot fetch pulse response\n", channel);
         status = INPHI_ERROR;
         goto done;
     }
@@ -16712,7 +16712,7 @@ inphi_status_t spica_srx_pulse_resp_query_dump_range(uint32_t die, uint32_t star
             continue;
         }
 
-        INPHI_NOTE("| %7d |", channel);
+        INPHI_NOTE("| %7lu |", channel);
 
         int32_t resp[6];
         int32_t len = sizeof(resp)/sizeof(resp[0]);
@@ -16722,7 +16722,7 @@ inphi_status_t spica_srx_pulse_resp_query_dump_range(uint32_t die, uint32_t star
 
         for(int32_t i=0; i<len; i++)
         {
-            INPHI_NOTE("%8d|", resp[i]);
+            INPHI_NOTE("%8lu|", resp[i]);
         }
         INPHI_NOTE("\n");
     }
@@ -16903,7 +16903,7 @@ inphi_status_t spica_mcu_pif_read(
 
     if(guard <= 0)
     {
-        INPHI_CRIT("Memory access failure on die %x\n", die);
+        INPHI_CRIT("Memory access failure on die %lu\n", die);
         status |= INPHI_ERROR;
         goto exit;
     }
@@ -16935,7 +16935,7 @@ inphi_status_t spica_mcu_pif_read(
             
         if(guard <= 0)
         {
-            INPHI_CRIT("Memory access failure on die %x\n", die);
+            INPHI_CRIT("Memory access failure on die %lu\n", die);
             status |= INPHI_ERROR;
         }
 #endif
@@ -16999,7 +16999,7 @@ inphi_status_t spica_mcu_pif_write(
     
     if(guard <= 0)
     {
-        INPHI_CRIT("Memory access failure on die %x\n", die);
+        INPHI_CRIT("Memory access failure on die %lu\n", die);
         status |= INPHI_ERROR;
         goto exit;
     }
@@ -17153,7 +17153,7 @@ inphi_status_t spica_mcu_direct_download_image_impl(
         if(num_32b_words == 0)
         {
             INPHI_NOTE("\n");
-            INPHI_CRIT("Malformed image. offset=%u num_words=%u\n", offset, num_32b_words);
+            INPHI_CRIT("Malformed image. offset=%lu num_words=%lu\n", offset, num_32b_words);
             status |= INPHI_ERROR;
             goto exit;
         }
@@ -17173,7 +17173,7 @@ inphi_status_t spica_mcu_direct_download_image_impl(
                 
                 if(data[0] != image[offset + i])
                 {
-                    INPHI_NOTE("Data at address %x does not match (programmed=%x, read=%x)!\n", addr, image[offset+i], data[0]);
+                    INPHI_NOTE("Data at address %lu does not match (programmed=%lu, read=%lu)!\n", addr, image[offset+i], data[0]);
                     status = INPHI_ERROR;
                     goto exit;
                 }
@@ -17489,7 +17489,7 @@ inphi_status_t spica_mcu_download_bootloader(
             // If the download was ok then start the application image up.
             if(status == INPHI_OK)
             {
-                INPHI_NOTE("Starting App Code on die %x\n", pdie);
+                INPHI_NOTE("Starting App Code on die %lu\n", pdie);
 
                 // Switch to the application bank
                 SPICA_MCU_GEN_CFG__STATVECTOR_SEL__RMW(pdie, 0x1);
@@ -17590,11 +17590,11 @@ inphi_status_t spica_mcu_download_firmware_from_file(
         
         if (verify)
         {
-            INPHI_NOTE("Writing FW image directly to die %x (with verify)\n", pdie);
+            INPHI_NOTE("Writing FW image directly to die %lu (with verify)\n", pdie);
         }
         else
         {
-            INPHI_NOTE("Writing FW image directly to die %x (without verify)\n", pdie);
+            INPHI_NOTE("Writing FW image directly to die %lu (without verify)\n", pdie);
         }
         
         uint32_t block_addr = 0;
@@ -17644,7 +17644,7 @@ inphi_status_t spica_mcu_download_firmware_from_file(
                             {
                                 if(verif_data[j] != block_data[j])
                                 {
-                                    INPHI_NOTE("Data at die 0x%08x address 0x%08x does not match (programmed=0x%08x, read=0x%08x)!\n", 
+                                    INPHI_NOTE("Data at die 0x%08lu address 0x%08lu does not match (programmed=0x%08lu, read=0x%08lu)!\n",
                                                     pdie, block_addr + block_offset, block_data[j], verif_data[j]);
                                     status = INPHI_ERROR;
                                     goto exit;
@@ -17690,7 +17690,7 @@ inphi_status_t spica_mcu_download_firmware_from_file(
                     {
                         if(verif_data[j] != block_data[j])
                         {
-                            INPHI_NOTE("Data at die 0x%08x address 0x%08x does not match (programmed=0x%08x, read=0x%08x)!\n", 
+                            INPHI_NOTE("Data at die 0x%08lu address 0x%08lu does not match (programmed=0x%08lu, read=0x%08lu)!\n",
                                             pdie, block_addr + block_offset, block_data[j], verif_data[j]);
                             status = INPHI_ERROR;
                             goto exit;
@@ -17710,7 +17710,7 @@ inphi_status_t spica_mcu_download_firmware_from_file(
         // If the download was ok then start the application image up.
         if(status == INPHI_OK)
         {
-            INPHI_NOTE("Starting App Code on die %x\n", pdie);
+            INPHI_NOTE("Starting App Code on die %lu\n", pdie);
             
             // Switch to the application bank
             SPICA_MCU_GEN_CFG__STATVECTOR_SEL__RMW(pdie, 0x1);
@@ -17877,7 +17877,7 @@ inphi_status_t spica_mcu_reset_into_mode(
 
         if (cnt == 0)
         {
-            INPHI_CRIT("Timed-out waiting for firmware to start, die = %x, fw_mode = %x\n", die,data);
+            INPHI_CRIT("Timed-out waiting for firmware to start, die = %lu, fw_mode = %lu\n", die,data);
             status = INPHI_ERROR;
         }
     }
@@ -17986,16 +17986,16 @@ inphi_status_t spica_mcu_status_query_print(
         uint32_t pdie = spica_package_get_base_die(die) + i;
         spica_mcu_status_query(pdie, &mcu_status);
 
-        INPHI_NOTE("MCU Status (die=0x%x)\n"
+        INPHI_NOTE("MCU Status (die=0x%lu)\n"
                    "=========================\n"
                    "  Mode:          %s\n"
                    "  Runstall:      %s\n"
                    "  Application Version:\n"
-                   "    %x = %d.%d.%d.%d\n"
+                   "    %lu = %d.%d.%d.%d\n"
                    "  API Version:\n"
-                   "    %x = %d.%d.%d.%d\n"
+                   "    %lu = %d.%d.%d.%d\n"
                    "  MDIO Address Error:\n"
-                   "    %x\n"
+                   "    %lu\n"
                    "  Loop count:\n",
                    pdie,
                    mcu_status.fw_mode_str,
@@ -18015,11 +18015,11 @@ inphi_status_t spica_mcu_status_query_print(
         // Display the loop counter
         for(int j = 0; j < 2; j++)
         {
-            INPHI_NOTE("    %d\n", mcu_status.loop_count[j]);
+            INPHI_NOTE("    %lu\n", mcu_status.loop_count[j]);
         }
         if (mcu_status.loop_duration != 0)
         {
-            INPHI_NOTE("  Loop duration: %dus\n", mcu_status.loop_duration);
+            INPHI_NOTE("  Loop duration: %luus\n", mcu_status.loop_duration);
         }
         else
         {
@@ -18031,7 +18031,7 @@ inphi_status_t spica_mcu_status_query_print(
         INPHI_NOTE("  Program Counter:\n");
         for(int j = 0; j < 10; j++)
         {
-            INPHI_NOTE("    0x%x\n", mcu_status.pc_trace[j]);
+            INPHI_NOTE("    0x%lu\n", mcu_status.pc_trace[j]);
         }
         
         INPHI_NOTE("\n");
@@ -18171,7 +18171,7 @@ inphi_status_t spica_mcu_debug_log_query(
 
     if((dbg_buffer_length < 1) || (dbg_buffer_offset >= dbg_buffer_length))
     {
-        INPHI_CRIT("MCU debug log length (%d) or offset (%d) invalid!\n", dbg_buffer_length, dbg_buffer_offset);
+        INPHI_CRIT("MCU debug log length (%lu) or offset (%lu) invalid!\n", dbg_buffer_length, dbg_buffer_offset);
         return INPHI_ERROR;
     }
 
@@ -18187,7 +18187,7 @@ inphi_status_t spica_mcu_debug_log_query(
     //is our buffer too small?
     if (dbg_buffer_length > buff_size-1)
     {
-        INPHI_WARN("buff_size-1 (%d) < total MCU debug buf len of %d\n", buff_size-1, dbg_buffer_length);
+        INPHI_WARN("buff_size-1 (%lu) < total MCU debug buf len of %lu\n", buff_size-1, dbg_buffer_length);
         total_bytes = buff_size-1;
 
         //start not at the dbg_buffer_offset, but at the earliest (in time) we can grab with this buffer
@@ -19057,7 +19057,7 @@ inphi_status_t spica_msg_recv(
             else
             {
                 INPHI_CRIT("Payload is bigger than the allocated response buffer, "
-                        "payload size = %d, max = %d\n", payload_index, max_payload );
+                        "payload size = %lu, max = %d\n", payload_index, max_payload );
                 return INPHI_ERROR;
             }
             payload_index++;
@@ -19602,7 +19602,7 @@ static inphi_status_t spica_msg2_pull_message(
     (void)rd_addr;
     if(status) goto msg2_unlock;
     if(cksum != pif_buf[0]) {
-        INPHI_CRIT("msg_type %d calc cksum %x != read cksum %x\n", *msg_type, cksum, pif_buf[0]);
+        INPHI_CRIT("msg_type %d calc cksum %lu != read cksum %lu\n", *msg_type, cksum, pif_buf[0]);
         //message is invalid, so we can't trust the rest of the messages either...
         status |= INPHI_ERROR;
         goto msg2_erase_and_unlock;
@@ -19797,7 +19797,7 @@ e_spica_poller_status spica_mcu_fec_stats_poller_get(
             if((status != INPHI_OK) || (resp_type != SPICA_MCU_MSG_FEC_STATS_RET))
             {
                 INPHI_CRIT("Error pulling message or FW returned error:\n"
-                           "status %d resp_id %d resp_type %d\n", status, resp_id, resp_type);
+                           "status %lu resp_id %d resp_type %d\n", status, resp_id, resp_type);
                 //must always unlock
                 status |= INPHI_ERROR;
                 goto msg2_error;
@@ -19805,7 +19805,7 @@ e_spica_poller_status spica_mcu_fec_stats_poller_get(
             // < so that we can update the structure in FW while maintaining backwards compatibility
             if(resp_len < exp_len)
             {
-                INPHI_CRIT("Unexpected resp_len %u != %u for msg %d, incompatible API/FW\n", resp_len, exp_len, resp_type);
+                INPHI_CRIT("Unexpected resp_len %u != %lu for msg %d, incompatible API/FW\n", resp_len, exp_len, resp_type);
                 status |= INPHI_ERROR;
                 goto msg2_error;
             }
@@ -19963,7 +19963,7 @@ inphi_status_t spica_msg_srx_pulse_resp_request(
     SPICA_LOCK(die);
 
     if(len < 2) {
-        INPHI_CRIT("Pulse resp len must be > 2: len = %d\n", len);
+        INPHI_CRIT("Pulse resp len must be > 2: len = %lu\n", len);
         status |= INPHI_ERROR;
         goto done;
     }
@@ -20922,7 +20922,7 @@ inphi_status_t por_rx_prbs_chk_status_query_all_print(
         status |= por_rx_prbs_chk_status(die, channel, intf, &chk_status[channel]);
     }
 
-    INPHI_NOTE("\n\n%s PRBS checker status of die: 0x%08x\n", intrface, die);
+    INPHI_NOTE("\n\n%s PRBS checker status of die: 0x%08lu\n", intrface, die);
     INPHI_NOTE("%5s| %5s| %10s| %8s| %8s| %12s| %21s| %10s| %10s|",
                "| Ch#",
                "Mode",
@@ -20943,7 +20943,7 @@ inphi_status_t por_rx_prbs_chk_status_query_all_print(
     INPHI_NOTE("\n");
     POR_FOR_CHANNEL_IN_CHANNELS(die, intf)
     {
-        INPHI_NOTE("|  %2d| %5s| %10s| %8s| %8s| %12u| %21" PRIu64 "| %10s|",
+        INPHI_NOTE("|  %2lu| %5s| %10s| %8s| %8s| %12lu| %21" PRIu64 "| %10s|",
                    channel,
                    chk_status[channel].prbs_mode == POR_PRBS_MODE_COMBINED ? "CMB" : "MSB",
                    chk_status[channel].prbs_lock ? "True" : "False",
@@ -21012,7 +21012,7 @@ inphi_status_t por_rx_prbs_chk_status_query_all_print(
 
         POR_FOR_CHANNEL_IN_CHANNELS(die, intf)
         {
-            INPHI_NOTE("|  %2d| %5s| %10s| %8s| %8s| %12u| %21" PRIu64 "| %10s|",
+            INPHI_NOTE("|  %2lu| %5s| %10s| %8s| %8s| %12lu| %21" PRIu64 "| %10s|",
                        channel,
                        "LSB",
                        chk_status[channel].prbs_lock_lsb ? "True" : "False",
@@ -21114,7 +21114,7 @@ inphi_status_t por_rx_prbs_chk_summary_dump(
 
     for(uint32_t channel = start; channel <= end; channel++)
     {
-        INPHI_NOTE("| %2d |", channel);
+        INPHI_NOTE("| %2lu |", channel);
 
         // Combined Mode
         if(chk_status[channel].prbs_mode == POR_PRBS_MODE_COMBINED)
@@ -21133,7 +21133,7 @@ inphi_status_t por_rx_prbs_chk_summary_dump(
 
             uint32_t prbs_error_bit_count = chk_status[channel].prbs_error_bit_count;
 
-            INPHI_NOTE(" Errors = %u", prbs_error_bit_count);
+            INPHI_NOTE(" Errors = %lu", prbs_error_bit_count);
             INPHI_NOTE("\n");
         }
         // MSB/LSB
@@ -21156,7 +21156,7 @@ inphi_status_t por_rx_prbs_chk_summary_dump(
             uint32_t prbs_error_bit_count_msb = chk_status[channel].prbs_error_bit_count;
             uint32_t prbs_error_bit_count_lsb = chk_status[channel].prbs_error_bit_count_lsb;
 
-            INPHI_NOTE(" Errors (MSB = %u, LSB = %u)",
+            INPHI_NOTE(" Errors (MSB = %lu, LSB = %lu)",
                          prbs_error_bit_count_msb,
                          prbs_error_bit_count_lsb);
 
@@ -21791,7 +21791,7 @@ inphi_status_t por_link_status_print(
 {
     inphi_status_t status = INPHI_OK;
 
-    INPHI_NOTE("Link Status for die 0x%08x\n", die);
+    INPHI_NOTE("Link Status for die 0x%08lu\n", die);
     INPHI_NOTE("+-----------------------------------------------------------------------------------+\n");
     INPHI_NOTE("|  TOP LEVEL                                                                        |\n");
     INPHI_NOTE("|  FW Lock        %s                                                                 |\n", link_status->fw_lock ? "Y" : ".");
@@ -22235,18 +22235,18 @@ void por_dbg_dump_rules(
 
     INPHI_NOTE("Device Initialization Rules\n"
                "Top Rules\n"
-               "  Die:                       0x%08x\n"
+               "  Die:                       0x%08lu\n"
                "  Package:                   %s\n"
                "  Efuse Driver Override      %s\n"
                "  Operational mode:          %s\n"
                "  Protocol mode:             %s\n"
                "  FEC mode:                  %s\n"
                "  Ref clock mode:            %s\n"
-               "  Ref clock:                 %d kHz\n"
-               "  Line Baud Rate (KBd)       %d KBd\n"
-               "  Host Baud Rate (KBd)       %d KBd\n"
+               "  Ref clock:                 %lu kHz\n"
+               "  Line Baud Rate (KBd)       %lu KBd\n"
+               "  Host Baud Rate (KBd)       %lu KBd\n"
                "  Show debug info:           %s\n"
-               "  FW download timeout:       %d milliseconds\n"
+               "  FW download timeout:       %lu milliseconds\n"
                "  IEEE demap:                %s\n"
                "  FW warn if mismatched:     %s\n" 
                "  ADV Breakout:              %s\n" 
@@ -22285,7 +22285,7 @@ void por_dbg_dump_rules(
     INPHI_NOTE("\nLTX XBR Rules     |");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_LTX)
     {
-        INPHI_NOTE("     Ch%d|", channel);
+        INPHI_NOTE("     Ch%lu|", channel);
     }
     INPHI_NOTE("\n");
     INPHI_NOTE("------------------+");
@@ -22325,7 +22325,7 @@ void por_dbg_dump_rules(
     INPHI_NOTE("\nHTX XBR Rules     |");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_HTX)
     {
-        INPHI_NOTE("     Ch%d|", channel);
+        INPHI_NOTE("     Ch%lu|", channel);
     }
     INPHI_NOTE("\n");
     INPHI_NOTE("------------------+");
@@ -22352,7 +22352,7 @@ void por_dbg_dump_rules(
     INPHI_NOTE("\nLTX CLK XBR Rules |");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_LTX)
     {
-        INPHI_NOTE("     Ch%d|", channel);
+        INPHI_NOTE("     Ch%lu|", channel);
     }
     INPHI_NOTE("\n");
     INPHI_NOTE("------------------+");
@@ -22373,7 +22373,7 @@ void por_dbg_dump_rules(
     INPHI_NOTE("\nHTX CLK XBR Rules |");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_HTX)
     {
-        INPHI_NOTE("     Ch%d|", channel);
+        INPHI_NOTE("     Ch%lu|", channel);
     }
     INPHI_NOTE("\n");
     INPHI_NOTE("------------------+");
@@ -22398,7 +22398,7 @@ void por_dbg_dump_rules(
     INPHI_NOTE("\n");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_LRX)
     {
-        INPHI_NOTE("  %4d | %6s | %11s | %10s | %8s | %9s | %10s | %8s | %8s | %10s | %8s ",
+        INPHI_NOTE("  %4lu | %6s | %11s | %10s | %8s | %9s | %10s | %8s | %8s | %10s | %8s ",
                    channel,
                    rules->lrx[channel].channel_enable ? "True" : "False",
                    por_dbg_translate_dsp_mode(rules->lrx[channel].dsp_mode),
@@ -22418,7 +22418,7 @@ void por_dbg_dump_rules(
                "  -----+--------+------------+-----------+----------+--------+------------+--------------+--------------+----------------------------------------+-------------+---------\n");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_LTX)
     {                                                                // tap
-        INPHI_NOTE("%s%2d | %6s | %10s | %9s | %8s | %6s | %10s | %12s | %12s |     %4d %4d %4d %4d %4d %4d %4d | %4d | %4d | %8s\n",
+        INPHI_NOTE("%s%2lu | %6s | %10s | %9s | %8s | %6s | %10s | %12s | %12s |     %4d %4d %4d %4d %4d %4d %4d | %4d | %4d | %8s\n",
                    "    ",
                    channel,
                    rules->ltx[channel].channel_enable ? "True" : "False",
@@ -22447,7 +22447,7 @@ void por_dbg_dump_rules(
                "  -----+--------+--------+----------+------------+-----------\n");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_HRX)
     {
-        INPHI_NOTE("  %4d | %6s | %6s | %8s | %10s | %12s\n",
+        INPHI_NOTE("  %4lu | %6s | %6s | %8s | %10s | %12s\n",
                    channel,
                    rules->hrx[channel].channel_enable ? "True" : "False",
                    rules->hrx[channel].invert_chan ? "True" : "False",
@@ -22461,7 +22461,7 @@ void por_dbg_dump_rules(
                "  -----+----------+----------+----------+----------+----------+---------+-----------+-----------+---------+----------+---------+--------+--------------+------------+------------+---------\n");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_HRX)
     {
-        INPHI_NOTE("  %4d | %8s | %8s | %8x | %8s | %8x | %7s | %9s | %9s | %7s | %8s | %7s | %6s | %12s | %10s | %10s | %7s\n",
+        INPHI_NOTE("  %4lu | %8s | %8s | %8x | %8s | %8x | %7s | %9s | %9s | %7s | %8s | %7s | %6s | %12s | %10s | %10s | %7s\n",
                    channel,
                    rules->hrx[channel].skip_adapt ? "True" : "False",
                    rules->hrx[channel].ctle_adapt_dis ? "True" : "False",
@@ -22487,7 +22487,7 @@ void por_dbg_dump_rules(
                "  -----+--------+------------+-----------+----------+--------+------------+--------------+--------------+----------------------------------------+-------------+---------\n");
     POR_FOR_CHANNEL_IN_CHANNELS(die, POR_INTF_HTX)
     {
-        INPHI_NOTE("  %4d | %6s | %10s | %9s | %8s | %6s | %10s | %12s | %12s |     %4d %4d %4d %4d %4d %4d %4d | %4d | %4d | %8s\n",
+        INPHI_NOTE("  %4lu | %6s | %10s | %9s | %8s | %6s | %10s | %12s | %12s |     %4d %4d %4d %4d %4d %4d %4d | %4d | %4d | %8s\n",
                    channel,
                    rules->htx[channel].channel_enable ? "True" : "False",
                    por_dbg_translate_signalling(rules->htx[channel].signalling),
@@ -22621,7 +22621,7 @@ inphi_status_t por_tx_fir_query_dump(
 
     INPHI_NOTE("  Ch#  | LUT Mode   | Gray Map | IEEE DeM | Invert | TAP_1 | TAP_2 | TAP_3 | TAP_4 | TAP_5 | TAP_6 | TAP_7 | Inner Eye   | Tx Swing\n"
                "  -----+------------+----------+----------+--------+-------+-------+-------+-------+-------+-------+-------+-------------+---------\n");
-    INPHI_NOTE("  %3d  | %10s | %8s | %8s | %6s | %5d | %5d | %5d | %5d | %5d | %5d | %5d | %4d | %4d | %8s\n",
+    INPHI_NOTE("  %3lu  | %10s | %8s | %8s | %6s | %5d | %5d | %5d | %5d | %5d | %5d | %5d | %4d | %4d | %8s\n",
                channel,
                por_dbg_translate_lut_mode(tx_rules.lut_mode),
                tx_rules.gray_mapping ? "True" : "False",
