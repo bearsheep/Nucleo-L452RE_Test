@@ -25,7 +25,7 @@
 
 // Set to 1 if to bundle the application firmware with
 // the API for programming via vega_mcu_download_firmware()
-#define INPHI_HAS_INLINE_APP_FW        1
+//#define INPHI_HAS_INLINE_APP_FW        0    // Modify define follow Inphi document "Normal production driver", Lance 20201004.
 #define INPHI_HAS_INLINE_BOOTLOADER_FW 1       
 
 // Set to 1 if you want to include support for downloading
@@ -69,16 +69,16 @@
 // Turn on/off the methods for accessing the EEPROM
 #define INPHI_HAS_EEPROM_ACCESS        1
 // Used for booting two devices from the same EEPROM
-#define INPHI_HAS_SHARED_EEPROM        1
+#define INPHI_HAS_SHARED_EEPROM        0    // Modify define follow Inphi document "Normal production driver", Lance 20201004.
 
 // Turn on/off conservative Inbound PIF reads.
 // To speed up verifying the f/w image this
 // can be set to 0.
 #define INPHI_HAS_INBPIF_READ_POLLING  1
 
-#define INPHI_HAS_LOG_NOTE 1
-#define INPHI_HAS_LOG_WARN 1
-#define INPHI_HAS_LOG_CRIT 1
+#define INPHI_HAS_LOG_NOTE 0    // Modify define follow Inphi document "Normal production driver", Lance 20201004.
+#define INPHI_HAS_LOG_WARN 0    // Modify define follow Inphi document "Normal production driver", Lance 20201004.
+#define INPHI_HAS_LOG_CRIT 0    // Modify define follow Inphi document "Normal production driver", Lance 20201004.
 
 #if !defined(INPHI_DONT_USE_STDLIB)
 #    if !defined(INPHI_HAS_FILESYSTEM)
