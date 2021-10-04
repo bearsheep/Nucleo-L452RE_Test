@@ -132,22 +132,21 @@ unsigned int INPHI_ABS(int value)
 
 #ifndef INPHI_DONT_USE_STDLIB
 #    if !defined(_WINDOWS) && !defined(_WIN32) && !defined(_WIN64)
-#        include <arpa/inet.h> /* for ntohs, htons            */
+#        //include <arpa/inet.h> /* for ntohs, htons            */  // Remove to fix build error, Lance 20201004.
 #    endif
 #endif
 
 uint32_t INPHI_NTOHL(uint32_t data)
 {
-#if defined(INPHI_DONT_USE_STDLIB) || defined(_WINDOWS)
+//#if defined(INPHI_DONT_USE_STDLIB) || defined(_WINDOWS)   // Remove to fix build error, Lance 20201004.
     // Platform independent ntohl
     uint8_t *datap = (uint8_t*)&data;
     return ((uint32_t)datap[0] << 24) |
            ((uint32_t)datap[1] << 16) |
            ((uint32_t)datap[2] << 8)  |
            ((uint32_t)datap[3]);
-#else
-    return ntohl(data);
-#endif
+//#else                                                     // Remove to fix build error, Lance 20201004.
+//    return ntohl(data);                                   // Remove to fix build error, Lance 20201004.
+//#endif                                                    // Remove to fix build error, Lance 20201004.
 }
-
 
